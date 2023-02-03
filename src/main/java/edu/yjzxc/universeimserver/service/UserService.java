@@ -1,6 +1,8 @@
 package edu.yjzxc.universeimserver.service;
 
+import edu.yjzxc.universeimserver.enums.ResponseEnum;
+
 public interface UserService {
 
-    void verifyAndSendRegisterEmailCode(String account);
+    ResponseEnum verifyAndSendRegisterEmailCode(String account);
 }

@@ -1,19 +1,36 @@
 package edu.yjzxc.universeimserver.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.lang.reflect.Method;
+import edu.yjzxc.universeimserver.enums.ResponseEnum;
+import edu.yjzxc.universeimserver.response.CommonResponse;
+import edu.yjzxc.universeimserver.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin("*")
 public class UserController {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/sendRegisterCode")
-    public void sendEmailCode(String emailAddress) {
+    @Autowired
+    UserService userService;
+
+    @RequestMapping(method = RequestMethod.POST, value = "/sendRegisterCode")
+    public CommonResponse sendEmailCode(String account) {
+        // 日志
+        System.out.println("进入系统");
+        if(!StringUtils.hasLength(account)) {
+            return CommonResponse.status(ResponseEnum.EMAIL_NULL_INCORRECT);
+        }
+
+        try {
+            ResponseEnum responseEnum = userService.verifyAndSendRegisterEmailCode(account);
+            return CommonResponse.status(responseEnum);
+        } catch (Exception e) {
+            // 日志
+            e.printStackTrace();
+            return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
+        }
 
     }
 
