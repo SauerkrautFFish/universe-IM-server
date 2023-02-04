@@ -1,15 +1,19 @@
 package edu.yjzxc.universeimserver.service.impl;
 
 import edu.yjzxc.universeimserver.constants.CommonConstant;
+import edu.yjzxc.universeimserver.entity.UserCenter;
 import edu.yjzxc.universeimserver.entity.UserCenterExample;
 import edu.yjzxc.universeimserver.mapper.UserCenterMapper;
 import edu.yjzxc.universeimserver.enums.ResponseEnum;
+import edu.yjzxc.universeimserver.request.RegisterRequest;
 import edu.yjzxc.universeimserver.service.UserService;
 import edu.yjzxc.universeimserver.utils.EmailUtil;
+import edu.yjzxc.universeimserver.utils.SnowFlake;
 import edu.yjzxc.universeimserver.utils.VerifyCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import java.util.Random;
@@ -41,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
         // 查询下该账号是否存在
         int count = userCenterMapper.countByExample(userCenterExample);
-        if(count != CommonConstant.ACCOUNT_NOT_EXIST) {
+        if(count != CommonConstant.COUNT_ZERO) {
             return ResponseEnum.ACCOUNT_EXISTS;
         }
 
@@ -62,5 +66,47 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public ResponseEnum createAccount(RegisterRequest registerRequest) {
+        String account = registerRequest.getAccount();
+
+        // 是否存在验证码
+        String registerCode = (String)redisTemplate.opsForValue().get(CommonConstant.REDIS_REGISTER_CODE + account);
+        if(!StringUtils.hasLength(registerCode)) {
+            return ResponseEnum.RESEND_REGISTER_CODE;
+        }
+
+        // 验证码是否一致
+        if(!registerRequest.getVerifyCode().equals(registerCode)) {
+            return ResponseEnum.REGISTER_CODE_ERROR;
+        }
+
+        // 构建user对象
+        UserCenter userCenter = new UserCenter();
+        userCenter.setAccount(account);
+        userCenter.setPassword(registerRequest.getPassword());
+        userCenter.setNickname(registerRequest.getNickname());
+        userCenter.setQrcode("");
+        userCenter.setCid("");
+        userCenter.setFaceImage("");
+        userCenter.setIsDel(CommonConstant.NOT_DEL);
+        userCenter.setId(SnowFlake.getNextId());
+
+        // todo cid and qrcode
+
+        // 创建账号
+        int count = userCenterMapper.insertIfNotExist(userCenter);
+        System.out.println("insert count = " + count);
+
+        // 判断是否创建成功
+        if(count == CommonConstant.INSERT_ONE) {
+            return ResponseEnum.SUCCESS;
+        } else {
+            // count=2代表执行了insert 和 update
+            // count=0插入失败会报错,直接系统异常
+            return ResponseEnum.ACCOUNT_EXISTS;
+        }
+
+    }
 
 }
