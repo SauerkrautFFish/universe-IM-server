@@ -18,8 +18,11 @@ public enum ResponseEnum {
     MISSING_PARAMS(-203, "参数缺失, 请输入完整!"),
     //-3
     ACCOUNT_EXISTS(-301, "该邮箱账号已存在!"),
-    RESEND_REGISTER_CODE(302, "请重新发送验证码!"),
-    REGISTER_CODE_ERROR(303, "验证码错误"),
+    RESEND_CODE(302, "请重新发送验证码!"),
+    VERIFY_CODE_ERROR(303, "验证码错误"),
+    ACCOUNT_NOT_EXISTS(304, "该邮箱账号不存在!"),
+
+    PASSWORD_INCORRECT(305, "密码错误!"),
     ;
 
     private Integer code;

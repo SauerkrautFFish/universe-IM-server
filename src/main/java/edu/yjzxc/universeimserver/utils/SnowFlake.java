@@ -1,9 +1,7 @@
 package edu.yjzxc.universeimserver.utils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SnowFlake {
 
     /**
@@ -14,20 +12,11 @@ public class SnowFlake {
     private static final long fixedTimeStamp = 1675371346L;
 
     // 机房Id
-    private static long computerRoomId;
-
-    @Value("${computerRoomIdConfig}")
-    public void setComputerRoomId(long computerRoomIdConfig) {
-        computerRoomId = computerRoomIdConfig;
-    }
+    private static long computerRoomId = 1;
 
     // 机器Id
-    private static long machineId;
+    private static long machineId = 1;
 
-    @Value("${machineIdConfig}")
-    public void setMachineId(long machineIdConfig) {
-        machineId = machineIdConfig;
-    }
 
     // 序列号
     private static long sequence = 0L;

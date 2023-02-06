@@ -1,9 +1,8 @@
 package edu.yjzxc.universeimserver.controller;
 
 import edu.yjzxc.universeimserver.constants.CommonConstant;
-import edu.yjzxc.universeimserver.entity.UserCenter;
 import edu.yjzxc.universeimserver.enums.ResponseEnum;
-import edu.yjzxc.universeimserver.request.RegisterRequest;
+import edu.yjzxc.universeimserver.request.UserRequest;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +39,16 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
-    public CommonResponse registerNewUser(@RequestBody RegisterRequest registerRequest) {
+    public CommonResponse registerNewUser(@RequestBody UserRequest userRequest) {
 
-        if(Objects.isNull(registerRequest) || !StringUtils.hasLength(registerRequest.getVerifyCode()) ||
-                registerRequest.getVerifyCode().length() != CommonConstant.REGISTER_VERIFY_CODE_NUMBER ||
-                !StringUtils.hasLength(registerRequest.getPassword()) || !StringUtils.hasLength(registerRequest.getNickname()) ||
-                !StringUtils.hasLength(registerRequest.getAccount())) {
+        if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getVerifyCode()) ||
+                userRequest.getVerifyCode().length() != CommonConstant.REGISTER_VERIFY_CODE_NUMBER ||
+                !StringUtils.hasLength(userRequest.getPassword()) || !StringUtils.hasLength(userRequest.getNickname()) ||
+                !StringUtils.hasLength(userRequest.getAccount())) {
             return CommonResponse.status(ResponseEnum.MISSING_PARAMS);
         }
         try {
-            ResponseEnum responseEnum = userService.createAccount(registerRequest);
+            ResponseEnum responseEnum = userService.createAccount(userRequest);
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             // 日志
@@ -58,4 +57,54 @@ public class UserController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/forgetPassword")
+    public CommonResponse forgetPassword(@RequestBody UserRequest userRequest) {
+
+        if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getVerifyCode()) ||
+                userRequest.getVerifyCode().length() != CommonConstant.FOEGET_PWD_VERIFY_CODE_NUMBER ||
+                !StringUtils.hasLength(userRequest.getPassword()) || !StringUtils.hasLength(userRequest.getAccount())) {
+            return CommonResponse.status(ResponseEnum.MISSING_PARAMS);
+        }
+        try {
+            ResponseEnum responseEnum = userService.resetPassword(userRequest);
+            return CommonResponse.status(responseEnum);
+        } catch (Exception e) {
+            // 日志
+            e.printStackTrace();
+            return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    public CommonResponse login(@RequestBody UserRequest userRequest) {
+
+        if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getPassword()) ||
+                !StringUtils.hasLength(userRequest.getAccount())) {
+            return CommonResponse.status(ResponseEnum.MISSING_PARAMS);
+        }
+        try {
+            return userService.loginIndex(userRequest);
+        } catch (Exception e) {
+            // 日志
+            e.printStackTrace();
+            return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/sendForgetPasswordCode")
+    public CommonResponse sendForgetPasswordCode(@RequestBody UserRequest userRequest) {
+
+        if(Objects.isNull(userRequest) || StringUtils.hasLength(userRequest.getAccount())) {
+            return CommonResponse.status(ResponseEnum.EMAIL_NULL_INCORRECT);
+        }
+
+        try {
+            ResponseEnum responseEnum = userService.verifyAndSendForgetPwdEmailCode(userRequest.getAccount());
+            return CommonResponse.status(responseEnum);
+        } catch (Exception e) {
+            // 日志
+            e.printStackTrace();
+            return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
+        }
+    }
 }
