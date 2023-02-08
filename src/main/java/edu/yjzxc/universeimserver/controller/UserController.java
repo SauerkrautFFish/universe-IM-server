@@ -5,6 +5,7 @@ import edu.yjzxc.universeimserver.enums.ResponseEnum;
 import edu.yjzxc.universeimserver.request.UserRequest;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -21,18 +23,17 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/sendRegisterCode")
     public CommonResponse sendEmailCode(String account) {
-        // 日志
-        System.out.println("进入 sendEmailCode");
+        log.info("[calling] sendEmailCode(account={})", account);
         if(!StringUtils.hasLength(account)) {
             return CommonResponse.status(ResponseEnum.EMAIL_NULL_INCORRECT);
         }
 
         try {
             ResponseEnum responseEnum = userService.verifyAndSendRegisterEmailCode(account);
+            log.info("[finish] sendEmailCode success to return.");
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
-            // 日志
-            e.printStackTrace();
+            log.error("[error] sendEmailCode occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
 
@@ -40,7 +41,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public CommonResponse registerNewUser(@RequestBody UserRequest userRequest) {
-
+        log.info("[calling] registerNewUser(userRequest={})", userRequest);
         if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getVerifyCode()) ||
                 userRequest.getVerifyCode().length() != CommonConstant.REGISTER_VERIFY_CODE_NUMBER ||
                 !StringUtils.hasLength(userRequest.getPassword()) || !StringUtils.hasLength(userRequest.getNickname()) ||
@@ -49,17 +50,17 @@ public class UserController {
         }
         try {
             ResponseEnum responseEnum = userService.createAccount(userRequest);
+            log.info("[finish] registerNewUser success to return.");
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
-            // 日志
-            e.printStackTrace();
+            log.error("[error] registerNewUser occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/forgetPassword")
     public CommonResponse forgetPassword(@RequestBody UserRequest userRequest) {
-
+        log.info("[calling] forgetPassword(userRequest={})", userRequest);
         if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getVerifyCode()) ||
                 userRequest.getVerifyCode().length() != CommonConstant.FOEGET_PWD_VERIFY_CODE_NUMBER ||
                 !StringUtils.hasLength(userRequest.getPassword()) || !StringUtils.hasLength(userRequest.getAccount())) {
@@ -67,43 +68,44 @@ public class UserController {
         }
         try {
             ResponseEnum responseEnum = userService.resetPassword(userRequest);
+            log.info("[finish] forgetPassword success to return.");
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
-            // 日志
-            e.printStackTrace();
+            log.error("[error] forgetPassword occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public CommonResponse login(@RequestBody UserRequest userRequest) {
-
+        log.info("[calling] login(userRequest={})", userRequest);
         if(Objects.isNull(userRequest) || !StringUtils.hasLength(userRequest.getPassword()) ||
                 !StringUtils.hasLength(userRequest.getAccount())) {
             return CommonResponse.status(ResponseEnum.MISSING_PARAMS);
         }
         try {
-            return userService.loginIndex(userRequest);
+            CommonResponse commonResponse = userService.loginIndex(userRequest);
+            log.info("[finish] login success to return.");
+            return commonResponse;
         } catch (Exception e) {
-            // 日志
-            e.printStackTrace();
+            log.error("[error] login occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/sendForgetPasswordCode")
     public CommonResponse sendForgetPasswordCode(@RequestBody UserRequest userRequest) {
-
+        log.info("[calling] sendForgetPasswordCode(userRequest={})", userRequest);
         if(Objects.isNull(userRequest) || StringUtils.hasLength(userRequest.getAccount())) {
             return CommonResponse.status(ResponseEnum.EMAIL_NULL_INCORRECT);
         }
 
         try {
             ResponseEnum responseEnum = userService.verifyAndSendForgetPwdEmailCode(userRequest.getAccount());
+            log.info("[finish] sendForgetPasswordCode success to return.");
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
-            // 日志
-            e.printStackTrace();
+            log.error("[error] sendForgetPasswordCode occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
     }

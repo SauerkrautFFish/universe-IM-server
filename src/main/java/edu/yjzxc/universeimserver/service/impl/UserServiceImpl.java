@@ -8,10 +8,7 @@ import edu.yjzxc.universeimserver.enums.ResponseEnum;
 import edu.yjzxc.universeimserver.request.UserRequest;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
-import edu.yjzxc.universeimserver.utils.EmailUtil;
-import edu.yjzxc.universeimserver.utils.QRCodeUtil;
-import edu.yjzxc.universeimserver.utils.SnowFlake;
-import edu.yjzxc.universeimserver.utils.VerifyCode;
+import edu.yjzxc.universeimserver.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -207,9 +204,8 @@ public class UserServiceImpl implements UserService {
             return CommonResponse.status(ResponseEnum.PASSWORD_INCORRECT);
         }
 
-        // todo token生成
-        String token = "";
-
+        String token = TokenUtil.buildToken(userCenter.getAccount(), null);
+        System.out.println(token);
         return CommonResponse.successData(token);
     }
 
