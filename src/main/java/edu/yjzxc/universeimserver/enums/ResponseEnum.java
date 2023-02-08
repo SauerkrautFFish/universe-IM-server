@@ -21,8 +21,8 @@ public enum ResponseEnum {
     RESEND_CODE(302, "请重新发送验证码!"),
     VERIFY_CODE_ERROR(303, "验证码错误"),
     ACCOUNT_NOT_EXISTS(304, "该邮箱账号不存在!"),
-
     PASSWORD_INCORRECT(305, "密码错误!"),
+    TOKEN_ISSUE(306, "状态已失效, 请重新登录!"),
     ;
 
     private Integer code;
