@@ -30,7 +30,6 @@ public class TokenUtil {
         headers.put("typ", "JWT");
         headers.put("alg", "HS256");
 
-        // 这里为什么要try catch？
         return JWT.create()
                 .withHeader(headers)
                 .withClaim("identity", identity)
@@ -40,12 +39,13 @@ public class TokenUtil {
                 .sign(algorithm);
     }
 
-    public static boolean verify(String token) {
+    public static String verify(String token) {
         Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
         JWTVerifier verifier = JWT.require(algorithm).build();
         try {
             DecodedJWT jwt = verifier.verify(token);
-            return true;
+            return jwt.getClaims().get("identity").asString();
+
         } catch (TokenExpiredException e) {
             // 续签 写一个enum？
             // 越想越头痛。。。
@@ -53,9 +53,9 @@ public class TokenUtil {
             // 后面搞个https把
             // 暂时就这样把，cid和ip验证其实都不完全靠谱
 
-            return true;
+            return null;
         } catch (JWTDecodeException e) {
-            return false;
+            return null;
         }
     }
 

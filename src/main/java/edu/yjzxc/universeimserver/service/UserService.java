@@ -14,4 +14,6 @@ public interface UserService {
     ResponseEnum resetPassword(UserRequest userRequest);
 
     CommonResponse loginIndex(UserRequest userRequest);
+
+    CommonResponse queryUserInfoById(Long id);
 }

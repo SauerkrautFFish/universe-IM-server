@@ -9,7 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @RestController
@@ -18,7 +23,7 @@ import java.util.Objects;
 @Slf4j
 public class UserController {
 
-    @Autowired
+    @Resource
     UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/sendRegisterCode")
@@ -106,6 +111,20 @@ public class UserController {
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             log.error("[error] sendForgetPasswordCode occur exception:{}", e.getMessage(), e);
+            return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getUserInfo")
+    public CommonResponse getUserInfo(@RequestAttribute("zxcId") String zxcId) {
+        log.info("[calling] getUserInfo(zxcId={})", zxcId);
+
+        try {
+            userService.queryUserInfoById(Long.parseLong(zxcId));
+            log.info("[finish] getUserInfo success to return.");
+            return CommonResponse.status(ResponseEnum.SUCCESS);
+        } catch (Exception e) {
+            log.error("[error] getUserInfo occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);
         }
     }

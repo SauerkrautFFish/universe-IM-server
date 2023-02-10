@@ -12,11 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class UniverseImServerApplication {
 
     public static void main(String[] args) {
-        log.info("info message ");
-        log.error("info err ");
-        log.warn("info warn ");
         SpringApplication.run(UniverseImServerApplication.class, args);
-
     }
 
 }

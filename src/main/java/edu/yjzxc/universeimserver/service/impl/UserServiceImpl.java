@@ -1,6 +1,7 @@
 package edu.yjzxc.universeimserver.service.impl;
 
 import edu.yjzxc.universeimserver.constants.CommonConstant;
+import edu.yjzxc.universeimserver.dto.UserInfoDTO;
 import edu.yjzxc.universeimserver.entity.UserCenter;
 import edu.yjzxc.universeimserver.entity.UserCenterExample;
 import edu.yjzxc.universeimserver.mapper.UserCenterMapper;
@@ -9,14 +10,17 @@ import edu.yjzxc.universeimserver.request.UserRequest;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
 import edu.yjzxc.universeimserver.utils.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,10 +28,10 @@ import java.util.regex.Pattern;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
+    @Resource
     UserCenterMapper userCenterMapper;
 
     Pattern pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
@@ -204,9 +208,22 @@ public class UserServiceImpl implements UserService {
             return CommonResponse.status(ResponseEnum.PASSWORD_INCORRECT);
         }
 
-        String token = TokenUtil.buildToken(userCenter.getAccount(), null);
-        System.out.println(token);
+        String token = TokenUtil.buildToken(userCenter.getId().toString(), userCenter.getAccount());
         return CommonResponse.successData(token);
+    }
+
+    @Override
+    public CommonResponse queryUserInfoById(Long id) {
+
+        UserCenter userCenter = userCenterMapper.selectByPrimaryKey(id);
+        if(Objects.isNull(userCenter)) {
+            return CommonResponse.status(ResponseEnum.ACCOUNT_NOT_EXISTS);
+        }
+
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        BeanUtils.copyProperties(userCenter, userInfoDTO);
+
+        return CommonResponse.successData(userInfoDTO);
     }
 
 }

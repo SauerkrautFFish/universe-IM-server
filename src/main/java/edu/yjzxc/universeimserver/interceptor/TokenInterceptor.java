@@ -1,6 +1,7 @@
 package edu.yjzxc.universeimserver.interceptor;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import edu.yjzxc.universeimserver.enums.ResponseEnum;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.utils.TokenUtil;
@@ -18,9 +19,11 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         request.setCharacterEncoding("UTF-8");
         String token = request.getHeader("access_token");
+        System.out.println(request.getServletPath());
         if(!Objects.isNull(token)) {
-            boolean verify = TokenUtil.verify(token);
-            if(verify) {
+            String zxcId = TokenUtil.verify(token);
+            if(null != zxcId) {
+                request.setAttribute("zxcId", zxcId);
                 return true;
             }
         }
