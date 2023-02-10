@@ -35,7 +35,7 @@ public class UserController {
 
         try {
             ResponseEnum responseEnum = userService.verifyAndSendRegisterEmailCode(account);
-            log.info("[finish] sendEmailCode success to return.");
+            log.info("[finish] sendEmailCode success to return. [responseEnum]={}", responseEnum);
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             log.error("[error] sendEmailCode occur exception:{}", e.getMessage(), e);
@@ -55,7 +55,7 @@ public class UserController {
         }
         try {
             ResponseEnum responseEnum = userService.createAccount(userRequest);
-            log.info("[finish] registerNewUser success to return.");
+            log.info("[finish] registerNewUser success to return. [responseEnum]={}", responseEnum);
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             log.error("[error] registerNewUser occur exception:{}", e.getMessage(), e);
@@ -73,7 +73,7 @@ public class UserController {
         }
         try {
             ResponseEnum responseEnum = userService.resetPassword(userRequest);
-            log.info("[finish] forgetPassword success to return.");
+            log.info("[finish] forgetPassword success to return. [responseEnum]={}", responseEnum);
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             log.error("[error] forgetPassword occur exception:{}", e.getMessage(), e);
@@ -90,7 +90,7 @@ public class UserController {
         }
         try {
             CommonResponse commonResponse = userService.loginIndex(userRequest);
-            log.info("[finish] login success to return.");
+            log.info("[finish] login success to return. [commonResponse]={}", commonResponse);
             return commonResponse;
         } catch (Exception e) {
             log.error("[error] login occur exception:{}", e.getMessage(), e);
@@ -107,7 +107,7 @@ public class UserController {
 
         try {
             ResponseEnum responseEnum = userService.verifyAndSendForgetPwdEmailCode(userRequest.getAccount());
-            log.info("[finish] sendForgetPasswordCode success to return.");
+            log.info("[finish] sendForgetPasswordCode success to return. [responseEnum]={}", responseEnum);
             return CommonResponse.status(responseEnum);
         } catch (Exception e) {
             log.error("[error] sendForgetPasswordCode occur exception:{}", e.getMessage(), e);
@@ -115,14 +115,14 @@ public class UserController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getUserInfo")
+    @RequestMapping(method = RequestMethod.POST, value = "/getUserInfo")
     public CommonResponse getUserInfo(@RequestAttribute("zxcId") String zxcId) {
         log.info("[calling] getUserInfo(zxcId={})", zxcId);
 
         try {
-            userService.queryUserInfoById(Long.parseLong(zxcId));
-            log.info("[finish] getUserInfo success to return.");
-            return CommonResponse.status(ResponseEnum.SUCCESS);
+            CommonResponse commonResponse = userService.queryUserInfoById(Long.parseLong(zxcId));
+            log.info("[finish] getUserInfo success to return. [commonResponse]={}", commonResponse);
+            return commonResponse;
         } catch (Exception e) {
             log.error("[error] getUserInfo occur exception:{}", e.getMessage(), e);
             return CommonResponse.status(ResponseEnum.SYSTEM_ERROR);

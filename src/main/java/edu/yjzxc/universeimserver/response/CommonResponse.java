@@ -50,5 +50,12 @@ public class CommonResponse<T> implements Serializable {
         return new CommonResponse<T>(ResponseEnum.SYSTEM_ERROR.getCode(), errMsg);
     }
 
-
+    @Override
+    public String toString() {
+        return "CommonResponse{" +
+                "code=" + code +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

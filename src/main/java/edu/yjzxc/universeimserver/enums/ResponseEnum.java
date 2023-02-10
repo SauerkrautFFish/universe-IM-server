@@ -40,4 +40,11 @@ public enum ResponseEnum {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "ResponseEnum{" +
+                "code=" + code +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

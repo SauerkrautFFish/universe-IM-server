@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         userCenter.setNickname(userRequest.getNickname());
         userCenter.setQrcode(filePath);
         userCenter.setCid(cid);
-        userCenter.setFaceImage("");
+        userCenter.setFaceImage("default.jpg");
         userCenter.setId(userId);
 
         // 创建账号
