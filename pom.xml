@@ -79,6 +79,13 @@
             <artifactId>javase</artifactId>
             <version>3.3.3</version>
         </dependency>
+        <!-- 分布式文件系统 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

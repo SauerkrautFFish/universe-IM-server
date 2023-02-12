@@ -11,7 +11,6 @@ import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
 import edu.yjzxc.universeimserver.utils.*;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

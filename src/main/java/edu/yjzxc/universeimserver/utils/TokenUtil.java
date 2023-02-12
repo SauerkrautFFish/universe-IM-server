@@ -39,12 +39,12 @@ public class TokenUtil {
                 .sign(algorithm);
     }
 
-    public static String verify(String token) {
+    public static Long verify(String token) {
         Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
         JWTVerifier verifier = JWT.require(algorithm).build();
         try {
             DecodedJWT jwt = verifier.verify(token);
-            return jwt.getClaims().get("identity").asString();
+            return jwt.getClaims().get("identity").asLong();
 
         } catch (TokenExpiredException e) {
             // 续签 写一个enum？

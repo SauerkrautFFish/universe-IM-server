@@ -21,7 +21,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = request.getHeader("access_token");
         System.out.println(request.getServletPath());
         if(!Objects.isNull(token)) {
-            String zxcId = TokenUtil.verify(token);
+            Long zxcId = TokenUtil.verify(token);
             if(null != zxcId) {
                 request.setAttribute("zxcId", zxcId);
                 return true;

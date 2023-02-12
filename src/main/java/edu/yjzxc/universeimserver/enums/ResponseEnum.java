@@ -23,6 +23,9 @@ public enum ResponseEnum {
     ACCOUNT_NOT_EXISTS(304, "该邮箱账号不存在!"),
     PASSWORD_INCORRECT(305, "密码错误!"),
     TOKEN_ISSUE(306, "状态已失效, 请重新登录!"),
+    ADD_FRIEND_YOURSELF(307, "不能添加自己为好友!"),
+    ALREADY_FRIEND(308, "请勿重复添加!"),
+
     ;
 
     private Integer code;

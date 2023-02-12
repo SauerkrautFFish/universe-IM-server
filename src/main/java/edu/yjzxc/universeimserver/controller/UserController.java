@@ -6,15 +6,11 @@ import edu.yjzxc.universeimserver.request.UserRequest;
 import edu.yjzxc.universeimserver.response.CommonResponse;
 import edu.yjzxc.universeimserver.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.util.Objects;
 
 @RestController
@@ -116,11 +112,11 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/getUserInfo")
-    public CommonResponse getUserInfo(@RequestAttribute("zxcId") String zxcId) {
+    public CommonResponse getUserInfo(@RequestAttribute("zxcId") Long zxcId) {
         log.info("[calling] getUserInfo(zxcId={})", zxcId);
 
         try {
-            CommonResponse commonResponse = userService.queryUserInfoById(Long.parseLong(zxcId));
+            CommonResponse commonResponse = userService.queryUserInfoById(zxcId);
             log.info("[finish] getUserInfo success to return. [commonResponse]={}", commonResponse);
             return commonResponse;
         } catch (Exception e) {

@@ -16,4 +16,6 @@ public interface UserService {
     CommonResponse loginIndex(UserRequest userRequest);
 
     CommonResponse queryUserInfoById(Long id);
+
+
 }
